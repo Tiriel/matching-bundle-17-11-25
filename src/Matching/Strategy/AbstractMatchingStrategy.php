@@ -8,9 +8,7 @@ use Tiriel\MatchingBundle\Interface\MatchableUserInterface;
 
 abstract class AbstractMatchingStrategy implements MatchingStrategyInterface
 {
-    public function __construct(
-        protected readonly ServiceEntityRepository $repository,
-    ) {}
+    protected ServiceEntityRepository $repository;
 
     public function match(MatchableUserInterface $user): iterable
     {
@@ -31,12 +29,12 @@ abstract class AbstractMatchingStrategy implements MatchingStrategyInterface
 
     protected function getMatchablesIdFromUser(MatchableUserInterface $user): array
     {
-        $matchables = iterator_to_array($this->getMatchablesFromUser());
+        $matchables = iterator_to_array($this->getMatchablesFromUser($user));
 
         return \array_map(fn(MatchableEntityInterface $e) => $e->getId(), $matchables);
     }
 
     abstract protected function getBaseEntityName(): string;
     abstract protected function getMatchableName(): string;
-    abstract protected function getMatchablesFromUser(): iterable;
+    abstract protected function getMatchablesFromUser(MatchableUserInterface $user): iterable;
 }

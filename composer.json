@@ -4,6 +4,7 @@
     "license": "proprietary",
     "minimum-stability": "stable",
     "prefer-stable": true,
+    "version": "v2.0.0",
     "require": {
         "php": ">=8.2",
         "ext-ctype": "*",
