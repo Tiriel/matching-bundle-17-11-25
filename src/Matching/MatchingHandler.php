@@ -2,26 +2,34 @@
 
 namespace Tiriel\MatchingBundle\Matching;
 
+use Symfony\Component\DependencyInjection\ServiceLocator;
 use Tiriel\MatchingBundle\Interface\MatchableUserInterface;
 use Tiriel\MatchingBundle\Matching\Strategy\MatchingStrategyInterface;
 use Symfony\Component\Cache\CacheItem;
 use Symfony\Component\DependencyInjection\Attribute\AutowireLocator;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
-class MatchingHandler implements MatchingStrategyInterface
+class MatchingHandler implements MatchingHandlerInterface
 {
+    protected string $strategyNamespace;
+
     public function __construct(
-        /** @var ContainerInterface<string, MatchingStrategyInterface> $strategies */
-        #[AutowireLocator('tiriel.matching_strategies')]
-        protected ContainerInterface $strategies,
-        protected readonly string $strategyNamespace,
+        /** @var ServiceLocator<string, MatchingStrategyInterface> $strategies */
+        #[AutowireLocator('tiriel.matching_strategy')]
+        protected ServiceLocator $strategies,
         protected readonly TagAwareCacheInterface $cache,
         protected readonly SluggerInterface $slugger,
-    ) {}
+    ) {
+        dump($strategies->getProvidedServices());
+    }
 
-    public function match(MatchableUserInterface $user, ?string $strategy = null): iterable
+    public function setStrategyNamespace(string $strategyNamespace): void
+    {
+        $this->strategyNamespace = $strategyNamespace;
+    }
+
+    public function match(MatchableUserInterface $user, string $strategy): iterable
     {
         $matchingStrategy = sprintf('%s\\%sMatchingStrategy', $this->strategyNamespace, ucfirst($strategy));
 

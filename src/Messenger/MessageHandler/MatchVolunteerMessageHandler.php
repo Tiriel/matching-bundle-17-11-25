@@ -10,8 +10,9 @@ use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 #[AsMessageHandler]
 final class MatchVolunteerMessageHandler
 {
+    protected ServiceEntityRepository $repository;
+
     public function __construct(
-        private readonly ServiceEntityRepository $repository,
         private readonly MatchingHandler $matcher,
     ) {}
 
@@ -29,5 +30,10 @@ final class MatchVolunteerMessageHandler
         }
 
         dump($matches);
+    }
+
+    public function setRepository(ServiceEntityRepository $repository): void
+    {
+        $this->repository = $repository;
     }
 }

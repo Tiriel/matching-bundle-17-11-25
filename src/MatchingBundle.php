@@ -8,12 +8,19 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
+use Tiriel\MatchingBundle\DependencyInjection\SetStrategyNamespacePass;
+use Tiriel\MatchingBundle\DependencyInjection\SetUserRepositoryPass;
+use Tiriel\MatchingBundle\DependencyInjection\TraceableMatchingStrategyPass;
 
 class MatchingBundle extends AbstractBundle
 {
     public function build(ContainerBuilder $container)
     {
-        // ...
+        $container
+            ->addCompilerPass(new SetUserRepositoryPass())
+            ->addCompilerPass(new SetStrategyNamespacePass())
+            ->addCompilerPass(new TraceableMatchingStrategyPass())
+        ;
     }
 
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
